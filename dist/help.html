@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How to convert Word and Excel documents into CMS-ready HTML with CMS Studio.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>User guide — CMS Studio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="index.html"><span class="logo" aria-hidden="true">c.</span><span>CMS Studio</span></a><nav aria-label="Main navigation"><a href="index.html">Open converter ↗</a></nav></header>
+  <main class="guide">
+    <a class="back-link" href="index.html">← Back to workspace</a>
+    <div class="eyebrow">USER GUIDE</div><h1>From document to published content.</h1>
+    <p>Convert a document, review the result and paste clean HTML into your CMS.</p>
+    <section class="panel"><h2>Get started</h2><ol>
+      <li><strong>Add a document.</strong> Drop a .docx or .xlsx file anywhere on the workspace, or click Browse files. Use one file at a time, up to 25 MB.</li>
+      <li><strong>Choose your options.</strong> For Excel, select a worksheet. For Word images, paste the URLs of images already uploaded to your CMS and choose how many adjacent images to place in a row.</li>
+      <li><strong>Convert to HTML.</strong> Read the review notes, then compare the content with the original document.</li>
+      <li><strong>Edit and export.</strong> You can edit the HTML directly. Copy HTML or download an .html file, then paste the fragment into your CMS HTML editor.</li>
+    </ol><p>Changing a worksheet, image URL or image layout clears the previous output. Convert again to apply the new options. Converting again replaces any manual edits in the HTML editor.</p></section>
+    <section class="panel"><h2>What is preserved?</h2>
+      <h3>Word documents</h3><p>Paragraphs, whole or partial bold text, hyperlinks, numbered and bulleted lists with nesting, tables and embedded images. Content follows the document XML order. Thai and English text are kept in their original language.</p>
+      <h3>Excel workbooks</h3><p>One selected worksheet becomes a table. The first populated row is the header. Empty rows and columns outside the data are trimmed; gaps inside it are retained. Displayed dates, percentages, leading zeros, hyperlinks, cell bold and rich-text bold are read where supported.</p>
+      <h3>Links and tables</h3><p>Website, telephone and email links are supported. Clear URLs and email addresses in plain text may become links; ordinary numbers never become telephone links automatically. Merged cells are expanded: the first cell keeps its content and the remaining cells are empty. Every table uses the required CMS wrappers.</p>
+    </section>
+    <section class="panel"><h2>Working with images</h2>
+      <p>Embedded Word images appear as local previews. Upload the originals to your CMS separately and enter each image URL beginning with <code>https://</code> or <code>http://</code>.</p>
+      <p>Missing URLs become placeholders such as <code>IMAGE_001_URL</code>. Replace all placeholders before publishing. Previews never become base64 or temporary blob URLs in the exported HTML.</p>
+      <p>Choose one, two or three adjacent images per row. Images are never grouped across intervening text, tables or separate list items. Excel images and charts are not extracted.</p>
+    </section>
+    <section class="panel"><h2>Conversion limits</h2><ul>
+      <li>Formatting outside the export rules, including italic, underline, colors, font sizes and sub/superscript, is removed while the text is retained.</li>
+      <li>Word headers, footers, footnotes, equations, SmartArt, charts and attachments are omitted. Floating images follow their XML anchors, so their positions can change. Some grouped drawings and advanced numbering are only partially supported; review the notes.</li>
+      <li>Excel formulas use saved results, which may be out of date. If no result is saved, the formula itself is shown as plain text with a warning. The app never calculates a formula or refreshes an external workbook.</li>
+      <li>Excel conditional formatting, charts, images and row/column font inheritance are not applied. Hidden rows and columns within the data range are included.</li>
+      <li>Numbered lists start at 1; special numbering and restarts cannot be preserved. Line breaks inside paragraphs become spaces.</li>
+      <li>Older .doc/.xls formats, password-protected files, macro-enabled files and damaged archives are not supported.</li>
+      <li>Limits: 25 MB per file, 150 MB unpacked, 15,000 archive entries and 100,000 cells per table. Large documents may temporarily slow down your browser.</li>
+    </ul></section>
+    <section class="panel"><h2>Editing and exporting</h2>
+      <p>The output is an HTML fragment, without a document wrapper, styles or scripts. Export is blocked if your edits introduce disallowed tags, attributes, classes or URLs. Empty paragraphs must be removed. Validation never silently rewrites your edits.</p>
+      <p>Close every tag, quote attribute values and escape special characters. Use <code>&amp;amp;</code>, <code>&amp;lt;</code>, <code>&amp;gt;</code>, <code>&amp;quot;</code>, <code>&amp;apos;</code> or numeric entities. Use <code>&amp;#160;</code> instead of <code>&amp;nbsp;</code>.</p>
+      <p>The downloaded file is UTF-8 without a BOM and matches the editor text. Windows Clipboard may use CRLF line endings instead of LF. If automatic copying is blocked, select the output and use Ctrl+C or ⌘C.</p>
+      <p>Your CMS must provide the expected CSS classes, including <code>table</code>, <code>list-bullet</code> and the image grid classes. Preview the result in your CMS before publishing.</p>
+    </section>
+    <section class="panel"><h2>Privacy &amp; access</h2>
+      <p>You can use a hosted HTTPS link from any supported browser, or open the downloaded app locally. The website host serves the application files; document contents are processed only in your browser. No documents are uploaded or stored by this app.</p>
+      <p>Each browser has its own temporary workspace. Files, image URLs and edited HTML are not shared between devices or saved after a page refresh. Clear workspace releases image previews and resets the converter.</p>
+    </section>
+    <footer><span>CMS Studio / User guide</span><a href="index.html">Back to workspace</a></footer>
+  </main>
+</body>
+</html>
