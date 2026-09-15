@@ -81,6 +81,47 @@
     }
     parent.append(node);
   }
+  // Detect phones across Word runs (labels and digits may use different bold
+  // formatting). Explicit document hyperlinks always take precedence.
+  function linkPlainPhones(tokens) {
+    const result = [];
+    for (let index = 0; index < tokens.length;) {
+      if (tokens[index].href !== undefined) { result.push(tokens[index++]); continue; }
+      const group = [];
+      while (index < tokens.length && tokens[index].href === undefined) group.push(tokens[index++]);
+      const text = group.map(t => t.text).join('');
+      const protectedRanges = [...text.matchAll(/https?:\/\/[^\s<>"']+|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)].map(m => [m.index, m.index + m[0].length]);
+      const ranges = [];
+      const candidates = /(?:0\d{1,2}[\s.\-–—]*\d{3}[\s.\-–—]*\d{4}|\+\d[\d ()\-.–—]{5,24}\d)(?!\d)/g;
+      for (const match of text.matchAll(candidates)) {
+        const start = match.index, end = start + match[0].length;
+        if (protectedRanges.some(([a, b]) => start < b && end > a)) continue;
+        if (/[\p{L}\p{N}_/@]/u.test(text[start - 1] || '') || /[\p{L}\p{N}_/@]/u.test(text[end] || '')) continue;
+        const display = match[0];
+        const normalized = display.replace(/[\s().\-–—]/g, '');
+        const labeled = /(?:โทร(?:ศัพท์)?|เบอร์(?:โทร(?:ศัพท์)?)?|tel(?:ephone)?|phone|mobile|contact|call)[.:：\s]*$/i.test(text.slice(Math.max(0, start - 40), start));
+        const formatted = /[.\-–— ]/.test(display) || display.startsWith('+');
+        if (!labeled && !formatted) continue;
+        if (normalized.startsWith('+') ? !/^\+[1-9]\d{6,14}$/.test(normalized) : !/^0\d{8,9}$/.test(normalized)) continue;
+        ranges.push({ start, end, href: 'tel:' + normalized });
+      }
+      let offset = 0;
+      for (const token of group) {
+        const end = offset + token.text.length;
+        let cursor = offset;
+        for (const range of ranges) {
+          if (range.end <= offset || range.start >= end) continue;
+          const a = Math.max(offset, range.start), b = Math.min(end, range.end);
+          if (a > cursor) result.push({ ...token, text: text.slice(cursor, a) });
+          result.push({ ...token, text: text.slice(a, b), href: range.href });
+          cursor = b;
+        }
+        if (cursor < end) result.push({ ...token, text: text.slice(cursor, end) });
+        offset = end;
+      }
+    }
+    return result;
+  }
   C.renderInline = (tokens, warnings) => {
     const container = C.element('div');
     const joined = [];
@@ -90,7 +131,7 @@
       if (last && last.bold === token.bold && last.href === token.href) last.text += token.text;
       else joined.push({ ...token });
     }
-    for (const token of joined) {
+    for (const token of linkPlainPhones(joined)) {
       if (token.href !== undefined) { appendText(container, token.text, token.bold, token.href, warnings); continue; }
       const pattern = /https?:\/\/[^\s<>"']+|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
       let cursor = 0;
@@ -105,6 +146,11 @@
         cursor = match.index + label.length;
       }
       appendText(container, token.text.slice(cursor), token.bold, undefined, warnings);
+    }
+    for (const link of [...container.querySelectorAll('a')]) {
+      while (link.nextSibling?.nodeName === 'A' && link.getAttribute('href') === link.nextSibling.getAttribute('href')) {
+        link.append(...link.nextSibling.childNodes); link.nextSibling.remove();
+      }
     }
     for (const strong of [...container.querySelectorAll('strong')]) {
       while (strong.nextSibling?.nodeName === 'STRONG') { strong.append(...strong.nextSibling.childNodes); strong.nextSibling.remove(); }
