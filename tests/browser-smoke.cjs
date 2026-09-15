@@ -31,17 +31,42 @@ const result = { browser: 'Microsoft Edge / Chromium', mode: hosted ? 'HTTP prod
   };
   await page.goto(appUrl);
   await test('App and vendored libraries load in the selected hosting mode', async () => {
-    assert.equal(await page.title(), 'CMS Studio — Document to HTML');
+    assert.equal(await page.title(), 'DocToWeb — Document to HTML');
     assert.deepEqual(await page.evaluate(() => [!!window.CMS, !!window.JSZip, XLSX.version]), [true, true, '0.20.3']);
   });
   await test('Interface and user guide are English with a working return link', async () => {
     assert.equal(await page.locator('html').getAttribute('lang'), 'en');
     assert(!/[ก-๙]/.test(await page.locator('body').innerText()));
     await page.getByRole('link', { name: 'User guide' }).click();
-    assert.equal(await page.title(), 'User guide — CMS Studio');
+    assert.equal(await page.title(), 'User guide — DocToWeb');
     assert(!/[ก-๙]/.test(await page.locator('body').innerText()));
     await page.getByRole('link', { name: 'Open converter' }).click();
-    assert.equal(await page.title(), 'CMS Studio — Document to HTML');
+    assert.equal(await page.title(), 'DocToWeb — Document to HTML');
+  });
+  await test('Plain telephone numbers become links while identifiers and URL paths stay intact', async () => {
+    await page.waitForFunction(() => !!window.CMS?.generate);
+    const output = await page.evaluate(() => {
+      const tokens = [CMS.text('โทร. '), CMS.text('081-', true), CMS.text('930-0764 อีเมล team@example.com Tel: 021234567 / 02-123-4567 / +66 81 234 5678 ID 0812345678 ปี 2568 https://example.com/081-234-5678')];
+      return CMS.generate({ blocks: [{ type: 'paragraph', tokens }], warnings: [] }).html;
+    });
+    assert(output.includes('<a href="tel:0819300764"><strong>081-</strong>930-0764</a>'));
+    assert(output.includes('<a href="tel:021234567">021234567</a>'));
+    assert(output.includes('<a href="tel:021234567">02-123-4567</a>'));
+    assert(output.includes('<a href="tel:+66812345678">+66 81 234 5678</a>'));
+    assert(output.includes('ID 0812345678 ปี 2568'));
+    assert(output.includes('href="https://example.com/081-234-5678"'));
+    assert.deepEqual(await page.evaluate(html => CMS.validate(html), output), []);
+  });
+  await test('Favicon and static social metadata point to the GitHub Pages site', async () => {
+    assert.equal(await page.locator('link[rel="icon"][type="image/svg+xml"]').getAttribute('href'), 'assets/favicon.svg');
+    assert.equal(await page.locator('meta[property="og:image"]').getAttribute('content'), 'https://jjjaydem.github.io/doc2web/assets/social-preview.png');
+    assert.equal(await page.locator('meta[property="og:image:width"]').getAttribute('content'), '1200');
+    assert.equal(await page.locator('meta[property="og:image:height"]').getAttribute('content'), '630');
+    assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute('content'), 'summary_large_image');
+    for (const file of ['favicon.ico', 'assets/favicon.svg', 'assets/favicon-32.png', 'assets/apple-touch-icon.png', 'assets/social-preview.png']) {
+      assert(fs.statSync(path.join(root, file)).size > 0);
+      assert.equal(fs.readFileSync(path.join(root, file)).compare(fs.readFileSync(path.join(root, 'dist', file))), 0);
+    }
   });
   const dropFiles = async (names, selector = '.file-picker strong') => {
     const payload = names.map(name => ({ name, bytes: [...fs.readFileSync(path.join(__dirname, name))] }));
@@ -235,3 +260,4 @@ const result = { browser: 'Microsoft Edge / Chromium', mode: hosted ? 'HTTP prod
   console.log(`${result.passed.length} passed, ${result.failed.length} failed`);
   process.exitCode = result.failed.length ? 1 : 0;
 })().catch(error => { console.error(error); process.exitCode = 1; });
+

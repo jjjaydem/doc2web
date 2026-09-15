@@ -4,6 +4,8 @@
   "passed": [
     "App and vendored libraries load in the selected hosting mode",
     "Interface and user guide are English with a working return link",
+    "Plain telephone numbers become links while identifiers and URL paths stay intact",
+    "Favicon and static social metadata point to the GitHub Pages site",
     "Drop DOCX on picker child highlights, reads and converts without navigation",
     "Drop XLSX anywhere on page including editor loads worksheet selector",
     "Multiple-file drop is rejected without clearing current output",

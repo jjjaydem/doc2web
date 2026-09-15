@@ -163,3 +163,5 @@ If Playwright is already installed elsewhere, set `NODE_PATH` to that node_modul
 
 JSZip is used under MIT (the upstream license also offers GPLv3); SheetJS uses Apache-2.0. Preserve the license files in `vendor/` when distributing the app.
 
+Telephone update (2026-09-15): Plain Thai phone numbers with visible separators, phone-labeled Thai numbers, and international + numbers are linked automatically. Phone text and bold formatting are preserved across Word runs. Existing hyperlinks take precedence; numbers inside URLs/emails and unlabeled digit-only identifiers are not converted.
+Branding update (2026-09-15): favicon.ico and assets/ contain the SVG/PNG favicon, Apple touch icon and 1200x630 social-preview.png. Static Open Graph and Twitter metadata in index.html and help.html use https://jjjaydem.github.io/doc2web/. Update those absolute URLs if you move the site. The build now publishes 17 assets. GitHub Pages deployments must include favicon.ico and assets/ beside index.html. Social preview caches are controlled by the sharing platform.

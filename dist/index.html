@@ -5,8 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Convert Word and Excel documents into clean, CMS-ready HTML. Process files privately in your browser, review the output and export an HTML fragment.">
   <meta name="theme-color" content="#172c56">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>CMS Studio — Document to HTML</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>DocToWeb — Document to HTML</title>
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+  <link rel="canonical" href="https://jjjaydem.github.io/doc2web/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DocToWeb">
+  <meta property="og:title" content="DocToWeb — Document to HTML">
+  <meta property="og:description" content="Turn Word and Excel files into clean, CMS-ready HTML. Your documents stay in your browser.">
+  <meta property="og:url" content="https://jjjaydem.github.io/doc2web/">
+  <meta property="og:image" content="https://jjjaydem.github.io/doc2web/assets/social-preview.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DocToWeb — Clean HTML starts here. Word and Excel to CMS-ready HTML.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DocToWeb — Document to HTML">
+  <meta name="twitter:description" content="Word and Excel to clean HTML. Private by design. Runs in your browser.">
+  <meta name="twitter:image" content="https://jjjaydem.github.io/doc2web/assets/social-preview.png">
+  <meta name="twitter:image:alt" content="DocToWeb — Clean HTML starts here.">
   <link rel="stylesheet" href="styles.css">
   <script defer src="vendor/jszip.min.js"></script>
   <script defer src="vendor/xlsx.full.min.js"></script>
@@ -18,12 +38,12 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="index.html"><span class="logo" aria-hidden="true">c.</span><span>CMS Studio</span></a>
+    <a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M10 12l-3 3 3 3m4-6 3 3-3 3"/></svg></span><span>DocToWeb</span></a>
     <nav aria-label="Main navigation"><span class="private-badge">Files stay in your browser</span><a href="help.html">User guide <span aria-hidden="true">↗</span></a></nav>
   </header>
   <main>
     <div class="intro">
-      <div><span class="eyebrow">THE CONTENT WORKSPACE</span><h1>Documents in. <span>Clean HTML out.</span></h1><p>Turn Word and Excel files into structured HTML for your CMS.</p></div>
+      <div><span class="eyebrow">THE CONTENT WORKSPACE</span><h1>Clean HTML <span>starts here.</span></h1><p>Turn Word and Excel files into structured HTML for your CMS.</p></div>
       <div class="format-badges" aria-label="Convert DOCX and XLSX to HTML"><span class="docx-badge">DOCX</span><span class="xlsx-badge">XLSX</span><span class="arrow" aria-hidden="true">→</span><span class="html-badge">&lt;/&gt; HTML</span></div>
     </div>
     <div class="workspace">
@@ -65,7 +85,7 @@
       <p><strong>Limits:</strong> 25 MB per file, 150 MB unpacked and 100,000 cells per table. Large files may temporarily slow down the browser.</p>
       <a href="help.html">Read the full user guide <span aria-hidden="true">↗</span></a>
     </div></details>
-    <footer><span>CMS Studio <span class="footer-separator">/</span> Document to HTML</span><span>English interface. Thai &amp; English content supported.</span></footer>
+    <footer><span>DocToWeb <span class="footer-separator">/</span> Document to HTML</span><span>English interface. Thai &amp; English content supported.</span></footer>
   </main>
 </body>
 </html>

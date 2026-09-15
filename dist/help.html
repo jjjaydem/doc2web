@@ -3,13 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="How to convert Word and Excel documents into CMS-ready HTML with CMS Studio.">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; base-uri 'none'; form-action 'none'">
-  <title>User guide — CMS Studio</title>
+  <meta name="description" content="How to convert Word and Excel documents into CMS-ready HTML with DocToWeb.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>User guide — DocToWeb</title>
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+  <link rel="canonical" href="https://jjjaydem.github.io/doc2web/help.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DocToWeb">
+  <meta property="og:title" content="User guide — DocToWeb">
+  <meta property="og:description" content="Turn Word and Excel files into clean, CMS-ready HTML. Your documents stay in your browser.">
+  <meta property="og:url" content="https://jjjaydem.github.io/doc2web/help.html">
+  <meta property="og:image" content="https://jjjaydem.github.io/doc2web/assets/social-preview.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DocToWeb — Clean HTML starts here. Word and Excel to CMS-ready HTML.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="User guide — DocToWeb">
+  <meta name="twitter:description" content="Word and Excel to clean HTML. Private by design. Runs in your browser.">
+  <meta name="twitter:image" content="https://jjjaydem.github.io/doc2web/assets/social-preview.png">
+  <meta name="twitter:image:alt" content="DocToWeb — Clean HTML starts here.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="index.html"><span class="logo" aria-hidden="true">c.</span><span>CMS Studio</span></a><nav aria-label="Main navigation"><a href="index.html">Open converter ↗</a></nav></header>
+  <header class="topbar"><a class="brand" href="index.html"><span class="logo" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M10 12l-3 3 3 3m4-6 3 3-3 3"/></svg></span><span>DocToWeb</span></a><nav aria-label="Main navigation"><a href="index.html">Open converter ↗</a></nav></header>
   <main class="guide">
     <a class="back-link" href="index.html">← Back to workspace</a>
     <div class="eyebrow">USER GUIDE</div><h1>From document to published content.</h1>
@@ -23,7 +43,7 @@
     <section class="panel"><h2>What is preserved?</h2>
       <h3>Word documents</h3><p>Paragraphs, whole or partial bold text, hyperlinks, numbered and bulleted lists with nesting, tables and embedded images. Content follows the document XML order. Thai and English text are kept in their original language.</p>
       <h3>Excel workbooks</h3><p>One selected worksheet becomes a table. The first populated row is the header. Empty rows and columns outside the data are trimmed; gaps inside it are retained. Displayed dates, percentages, leading zeros, hyperlinks, cell bold and rich-text bold are read where supported.</p>
-      <h3>Links and tables</h3><p>Website, telephone and email links are supported. Clear URLs and email addresses in plain text may become links; ordinary numbers never become telephone links automatically. Merged cells are expanded: the first cell keeps its content and the remaining cells are empty. Every table uses the required CMS wrappers.</p>
+      <h3>Links and tables</h3><p>Website, telephone and email links are supported. Clear URLs and email addresses in plain text may become links; clearly formatted Thai telephone numbers and numbers labeled Phone, Tel or a Thai telephone label become telephone links too. Unlabeled digit-only identifiers remain plain text. Merged cells are expanded: the first cell keeps its content and the remaining cells are empty. Every table uses the required CMS wrappers.</p>
     </section>
     <section class="panel"><h2>Working with images</h2>
       <p>Embedded Word images appear as local previews. Upload the originals to your CMS separately and enter each image URL beginning with <code>https://</code> or <code>http://</code>.</p>
@@ -49,7 +69,9 @@
       <p>You can use a hosted HTTPS link from any supported browser, or open the downloaded app locally. The website host serves the application files; document contents are processed only in your browser. No documents are uploaded or stored by this app.</p>
       <p>Each browser has its own temporary workspace. Files, image URLs and edited HTML are not shared between devices or saved after a page refresh. Clear workspace releases image previews and resets the converter.</p>
     </section>
-    <footer><span>CMS Studio / User guide</span><a href="index.html">Back to workspace</a></footer>
+    <footer><span>DocToWeb / User guide</span><a href="index.html">Back to workspace</a></footer>
   </main>
 </body>
 </html>
+
+
