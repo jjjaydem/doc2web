@@ -1,0 +1,40 @@
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+const path=require('node:path');
+const {pathToFileURL}=require('node:url');
+(async()=>{
+ const browser=await chromium.launch({channel:'msedge',headless:true});
+ try {
+ const page=await browser.newPage({viewport:{width:1700,height:1000}}), remote=[], errors=[];
+ page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href);
+ assert.equal(await page.locator('#add-rule').count(),0);
+ await page.locator('#file').setInputFiles(path.join(__dirname,'sample.docx'));
+ await page.waitForFunction(()=>!document.querySelector('#convert').disabled);
+ await page.locator('#convert').click();
+ await page.waitForFunction(()=>document.querySelector('#article-preview').textContent.trim().length>0);
+ assert.equal(await page.locator('#article-preview a[href]').count(),0);
+ assert(await page.locator('#article-preview table').count()>0);
+ const count=await page.locator('#images input').count();assert(count>1);
+ await page.locator('.bulk-urls summary').click();
+ await page.locator('#bulk-input').fill('https://example.com/only-one.jpg');await page.locator('#bulk-review').click();assert(await page.locator('#bulk-apply').isDisabled());
+ const urls=Array.from({length:count},(_,i)=>`https://example.com/news-${i+1}.jpg`);
+ await page.locator('#bulk-input').fill(urls.map((s,i)=>i===0?'javascript:alert(1)':s).join('\n'));await page.locator('#bulk-review').click();assert(await page.locator('#bulk-apply').isDisabled());
+ await page.locator('#bulk-input').fill('\n'+urls.join('\r\n')+'\n');await page.locator('#bulk-review').click();
+ assert.equal(await page.locator('#bulk-matches li').count(),count);assert.equal(await page.locator('#image-url-0').inputValue(),'');
+ await page.locator('#bulk-input').fill(urls.join('\n')+'\n\n');assert(await page.locator('#bulk-apply').isDisabled());await page.locator('#bulk-review').click();await page.locator('#bulk-apply').click();
+ assert.equal(await page.locator('#image-url-0').inputValue(),urls[0]);assert.equal(await page.locator('#output').inputValue(),'');
+ await page.locator('#convert').click();await page.waitForFunction(()=>document.querySelector('#output').value.includes('https://example.com/news-1.jpg'));
+ await page.waitForFunction(()=>document.querySelector('#article-preview').textContent.trim().length>0);
+ assert.equal(await page.locator('#article-preview img[src^="http"]').count(),0);
+ await page.screenshot({path:path.resolve(__dirname,'../output/playwright/preview-desktop.png'),fullPage:true});
+ await page.locator('#output').fill('<p>Live edit &amp; check</p>');await page.waitForFunction(()=>document.querySelector('#article-preview').textContent==='Live edit & check');
+ await page.locator('#output').fill('<img src="https://example.com/tracker.jpg" onerror="alert(1)">');await page.waitForFunction(()=>document.querySelector('#preview-status').textContent.includes('paused'));assert.equal(await page.locator('#article-preview img').count(),0);
+ await page.locator('#output').fill('<figure class="text-center"><img class="img-fluid" src="https://example.com/new.jpg"></figure>');await page.waitForFunction(()=>document.querySelector('.preview-placeholder'));assert.equal(await page.locator('#article-preview img').count(),0);
+ await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ await page.screenshot({path:path.resolve(__dirname,'../output/playwright/preview-mobile.png'),fullPage:true});
+ await page.locator('#clear').click();await page.waitForFunction(()=>document.querySelector('#article-preview').textContent==='');assert.equal(await page.locator('#bulk-input').inputValue(),'');
+ assert.deepEqual(remote,[]);assert.deepEqual(errors,[]);
+ console.log('PASS: preview, live edits, inactive links, tables, bulk count/URL validation, review before apply, draft invalidation, URL export, unsafe HTML, no remote image fetch, reset and mobile width.');
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});
