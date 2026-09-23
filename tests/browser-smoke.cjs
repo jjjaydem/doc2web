@@ -57,12 +57,9 @@ const result = { browser: 'Microsoft Edge / Chromium', mode: hosted ? 'HTTP prod
     assert(output.includes('href="https://example.com/081-234-5678"'));
     assert.deepEqual(await page.evaluate(html => CMS.validate(html), output), []);
   });
-  await test('Favicon and static social metadata point to the GitHub Pages site', async () => {
+  await test('Favicon assets exist; V2 does not claim the V1 public URL', async () => {
     assert.equal(await page.locator('link[rel="icon"][type="image/svg+xml"]').getAttribute('href'), 'assets/favicon.svg');
-    assert.equal(await page.locator('meta[property="og:image"]').getAttribute('content'), 'https://jjjaydem.github.io/doc2web/assets/social-preview.png');
-    assert.equal(await page.locator('meta[property="og:image:width"]').getAttribute('content'), '1200');
-    assert.equal(await page.locator('meta[property="og:image:height"]').getAttribute('content'), '630');
-    assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute('content'), 'summary_large_image');
+    assert.equal(await page.locator('link[rel=canonical]').count(), 0);
     for (const file of ['favicon.ico', 'assets/favicon.svg', 'assets/favicon-32.png', 'assets/apple-touch-icon.png', 'assets/social-preview.png']) {
       assert(fs.statSync(path.join(root, file)).size > 0);
       assert.equal(fs.readFileSync(path.join(root, file)).compare(fs.readFileSync(path.join(root, 'dist', file))), 0);
