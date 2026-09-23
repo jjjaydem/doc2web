@@ -10,69 +10,9 @@
     ui['notice-list'].replaceChildren(...[...new Set(messages)].map(text => C.element('li', {}, [document.createTextNode(text)])));
   }
   function releasePreviews() { previewUrls.forEach(url => URL.revokeObjectURL(url)); previewUrls = []; }
-  $('toggle-preview').addEventListener('click', () => {
-    const pane = $('preview-pane');
-    pane.hidden = !pane.hidden;
-    document.querySelector('.result-split').classList.toggle('preview-hidden', pane.hidden);
-    $('toggle-preview').textContent = pane.hidden ? 'Show preview' : 'Hide preview';
-    $('toggle-preview').setAttribute('aria-expanded', String(!pane.hidden));
-    // Reflow the syntax overlay after the editor width changes.
-    C.highlightEditor();
-  });
-  const imagePreviews = new Map();
-  let reviewedUrls = null, previewTimer;
-  function updatePreview() {
-    const host = $('article-preview'), status = $('preview-status'), source = ui.output.value;
-    host.replaceChildren();
-    if (!source.trim()) { status.textContent = 'Convert a document to see its preview.'; return; }
-    if (C.validate(source).length) { status.textContent = 'Preview paused: fix invalid HTML before previewing.'; return; }
-    const template = document.createElement('template');
-    template.innerHTML = source;
-    const sources = new Map();
-    for (const item of model?.images || []) {
-      const local = imagePreviews.get(item.id);
-      sources.set(`IMAGE_${String(item.id + 1).padStart(3, '0')}_URL`, local);
-      const url = $('image-url-' + item.id)?.value.trim();
-      if (url) sources.set(url, local);
-    }
-    for (const img of template.content.querySelectorAll('img')) {
-      const local = sources.get(img.getAttribute('src'));
-      if (local) { img.src = local; img.alt = 'Local document image'; img.addEventListener('error', () => img.replaceWith(document.createTextNode('[Image preview unavailable]'))); }
-      else { const placeholder = document.createElement('span'); placeholder.className = 'preview-placeholder'; placeholder.textContent = '[Image: ' + img.getAttribute('src') + ']'; img.replaceWith(placeholder); }
-    }
-    for (const link of template.content.querySelectorAll('a')) { link.removeAttribute('href'); link.removeAttribute('target'); }
-    host.append(template.content);
-    status.textContent = 'Preview follows your HTML edits. Links are inactive.';
-  }
-  function clearBulk() { reviewedUrls = null; $('bulk-apply').disabled = true; $('bulk-matches').replaceChildren(); $('bulk-status').textContent = ''; }
-  $('bulk-input').addEventListener('input', clearBulk);
-  $('bulk-review').addEventListener('click', () => {
-    clearBulk();
-    const urls = $('bulk-input').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-    const images = model?.images || [];
-    if (!images.length || urls.length !== images.length) { $('bulk-status').textContent = `Expected ${images.length} URLs; received ${urls.length}. No image URLs changed.`; return; }
-    const invalid = urls.findIndex(url => !/^https?:\/\//i.test(url) || !C.safeImage(url));
-    if (invalid >= 0) { $('bulk-status').textContent = `URL ${invalid + 1} must be a valid http(s) URL. No image URLs changed.`; return; }
-    reviewedUrls = urls;
-    images.forEach((item, index) => {
-      const li = document.createElement('li');
-      const local = imagePreviews.get(item.id);
-      if (local) { const img = document.createElement('img'); img.src = local; img.alt = `Image ${index + 1}`; li.append(img); }
-      const label = document.createElement('span'); label.textContent = `${item.name || 'Image ' + (index + 1)} → ${urls[index]}`; li.append(label); $('bulk-matches').append(li);
-    });
-    $('bulk-status').textContent = 'Check the order below. Apply replaces all image URL fields and clears the current HTML; convert again afterwards.';
-    $('bulk-apply').disabled = false;
-  });
-  $('bulk-apply').addEventListener('click', () => {
-    if (!reviewedUrls || reviewedUrls.length !== model?.images.length) return;
-    model.images.forEach((item, index) => { $('image-url-' + item.id).value = reviewedUrls[index]; });
-    clearBulk(); $('bulk-status').textContent = 'URLs applied. Convert again to update your HTML and preview.';
-    invalidateOutput('Image URLs updated. Convert again to apply them.');
-  });
   function outputChanged() {
     const value = ui.output.value;
     C.highlightEditor();
-    clearTimeout(previewTimer); previewTimer = setTimeout(updatePreview, value ? 180 : 0);
     ui['character-count'].textContent = value.length.toLocaleString('en-US') + ' characters';
     ui.copy.disabled = ui.download.disabled = !value.trim();
     ui['output-state'].textContent = value ? 'Review before publishing' : 'Awaiting conversion';
@@ -83,7 +23,7 @@
   }
   function reset() {
     revision++; model = workbook = null; currentName = ''; conversionWarnings = [];
-    releasePreviews(); imagePreviews.clear(); clearBulk(); $('bulk-input').value = ''; ui.images.replaceChildren(); ui.sheet.replaceChildren();
+    releasePreviews(); ui.images.replaceChildren(); ui.sheet.replaceChildren();
     ui['sheet-field'].hidden = ui['image-settings'].hidden = true;
     ui['image-layout'].value = '1'; ui.file.value = ''; ui.file.disabled = false;
     ui['file-name'].textContent = 'No file selected'; ui.status.textContent = 'Ready when you are';
@@ -94,7 +34,7 @@
     for (const item of images) {
       const card = C.element('div', { class: 'image-card' });
       if (item.blob) {
-        const url = URL.createObjectURL(item.blob); previewUrls.push(url); imagePreviews.set(item.id, url);
+        const url = URL.createObjectURL(item.blob); previewUrls.push(url);
         const img = C.element('img', { src: url, alt: 'Preview of image ' + (item.id + 1) });
         img.addEventListener('error', () => { img.replaceWith(document.createTextNode('This image cannot be previewed. Please check the original document.')); });
         card.append(img);
@@ -102,7 +42,7 @@
       const id = 'image-url-' + item.id;
       card.append(C.element('label', { for: id }, [document.createTextNode(`Image ${item.id + 1} · ${item.name || 'Embedded image'}`)]));
       const input = C.element('input', { id, type: 'url', placeholder: `IMAGE_${String(item.id + 1).padStart(3, '0')}_URL`, 'aria-label': `URL for image ${item.id + 1}` });
-      input.addEventListener('input', () => { clearBulk(); invalidateOutput('Image URL updated. Convert again to apply your changes.'); });
+      input.addEventListener('input', () => invalidateOutput('Image URL updated. Convert again to apply your changes.'));
       card.append(input); ui.images.append(card);
     }
   }

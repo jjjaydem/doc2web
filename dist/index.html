@@ -11,14 +11,30 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
-  <link rel="stylesheet" href="styles.css?v=05ba21269d9a">
-  <script defer src="vendor/jszip.min.js?v=acc7e41455a8"></script>
-  <script defer src="vendor/xlsx.full.min.js?v=cc015130aa85"></script>
-  <script defer src="js/core.js?v=861286665276"></script>
-  <script defer src="js/docx.js?v=ba340a2531db"></script>
-  <script defer src="js/xlsx.js?v=1c0da1723c72"></script>
-  <script defer src="js/editor.js?v=4fedb338ef0a"></script>
-  <script defer src="js/app.js?v=3b842e240c65"></script>
+  <link rel="canonical" href="https://jjjaydem.github.io/doc2web/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DocToWeb">
+  <meta property="og:title" content="DocToWeb — Document to HTML">
+  <meta property="og:description" content="Turn Word and Excel files into clean, CMS-ready HTML. Your documents stay in your browser.">
+  <meta property="og:url" content="https://jjjaydem.github.io/doc2web/">
+  <meta property="og:image" content="https://jjjaydem.github.io/doc2web/assets/social-preview.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DocToWeb — Clean HTML starts here. Word and Excel to CMS-ready HTML.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DocToWeb — Document to HTML">
+  <meta name="twitter:description" content="Word and Excel to clean HTML. Private by design. Runs in your browser.">
+  <meta name="twitter:image" content="https://jjjaydem.github.io/doc2web/assets/social-preview.png">
+  <meta name="twitter:image:alt" content="DocToWeb — Clean HTML starts here.">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="vendor/jszip.min.js"></script>
+  <script defer src="vendor/xlsx.full.min.js"></script>
+  <script defer src="js/core.js"></script>
+  <script defer src="js/docx.js"></script>
+  <script defer src="js/xlsx.js"></script>
+  <script defer src="js/editor.js"></script>
+  <script defer src="js/app.js"></script>
 </head>
 <body>
   <header class="topbar">
@@ -27,7 +43,7 @@
   </header>
   <main>
     <div class="intro">
-      <div><h1>Clean HTML <span>starts here.</span></h1><p>Turn Word and Excel files into structured HTML for your CMS.</p></div>
+      <div><span class="eyebrow">THE CONTENT WORKSPACE</span><h1>Clean HTML <span>starts here.</span></h1><p>Turn Word and Excel files into structured HTML for your CMS.</p></div>
       <div class="format-badges" aria-label="Convert DOCX and XLSX to HTML"><span class="docx-badge">DOCX</span><span class="xlsx-badge">XLSX</span><span class="arrow" aria-hidden="true">→</span><span class="html-badge">&lt;/&gt; HTML</span></div>
     </div>
     <div class="workspace">
@@ -45,23 +61,18 @@
         </div>
         <div id="image-settings" hidden>
           <div class="field"><label for="image-layout">Adjacent images per row</label><select id="image-layout"><option value="1">1 image per row</option><option value="2">2 images per row</option><option value="3">3 images per row</option></select></div>
-          <details class="bulk-urls"><summary>Paste multiple image URLs</summary>
-          <p class="muted">One URL per line, in image order. Blank lines are ignored. Provide one URL for every image.</p>
-          <label for="bulk-input">CMS image URLs</label><textarea id="bulk-input" rows="5" placeholder="https://example.com/image-01.jpg&#10;https://example.com/image-02.jpg"></textarea>
-          <button id="bulk-review" class="secondary full">Review matching</button><p id="bulk-status" role="status"></p><ol id="bulk-matches"></ol><button id="bulk-apply" class="primary full" disabled>Apply URLs</button>
-          </details><p class="muted">Upload images to your CMS, then paste their public URLs below.</p><div id="images"></div>
+          <p class="muted">Upload images to your CMS, then paste their public URLs below.</p><div id="images"></div>
         </div>
         <div class="local-note"><span class="note-icon" aria-hidden="true">✓</span><div><strong>Your documents stay private</strong><p>Files are processed in this browser. No uploads, no accounts, no stored documents.</p></div></div>
       </section>
       <section class="panel result-panel" aria-labelledby="result-heading">
-        <div class="panel-heading"><span class="step">02</span><h2 id="result-heading">CMS-ready HTML</h2><span id="output-state" class="output-state">Awaiting conversion</span><button id="toggle-preview" class="secondary" type="button" aria-expanded="true" aria-controls="preview-pane">Hide preview</button></div>
-        <div class="result-split"><section class="html-pane" aria-label="HTML code"><div class="editor-toolbar"><span><span class="code-mark" aria-hidden="true">&lt;/&gt;</span> HTML FRAGMENT</span><span id="character-count">0 characters</span></div>
+        <div class="panel-heading"><span class="step">02</span><h2 id="result-heading">CMS-ready HTML</h2><span id="output-state" class="output-state">Awaiting conversion</span></div>
+        <div class="editor-toolbar"><span><span class="code-mark" aria-hidden="true">&lt;/&gt;</span> HTML FRAGMENT</span><span id="character-count">0 characters</span></div>
         <label class="sr-only" for="output">Converted HTML. You can edit this code before exporting.</label>
         <div class="code-editor">
           <pre id="code-highlight" aria-hidden="true"></pre>
           <textarea id="output" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Your HTML will appear here.&#10;&#10;1. Add a Word or Excel file&#10;2. Choose your options and convert&#10;3. Review, edit and export"></textarea>
         </div>
-        </section><section id="preview-pane" class="preview-pane" aria-label="Article preview"><div class="editor-toolbar"><span>ARTICLE PREVIEW</span><span>Live</span></div><p class="preview-note">Approximate layout. Your CMS controls the final styling. Images use local document previews; external URLs are not loaded.</p><p id="preview-status" role="status"></p><div id="article-preview"></div></section></div>
         <div class="result-footer"><span>Editable output <span aria-hidden="true">·</span> UTF-8 <span aria-hidden="true">·</span> No styles or scripts</span><div><button id="download" class="secondary" disabled><span aria-hidden="true">↓</span> Download .html</button><button id="copy" class="primary" disabled>Copy HTML</button></div></div>
       </section>
     </div>
@@ -76,6 +87,5 @@
     </div></details>
     <footer><span>DocToWeb <span class="footer-separator">/</span> Document to HTML</span><span>English interface. Thai &amp; English content supported.</span></footer>
   </main>
-  <span class="version-badge" aria-label="Version 2.0">v2.0</span>
 </body>
 </html>

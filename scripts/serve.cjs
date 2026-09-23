@@ -19,4 +19,4 @@ http.createServer((request, response) => {
     'Referrer-Policy': 'no-referrer'
   });
   fs.createReadStream(file).pipe(response);
-}).listen(Number(process.env.PORT || 8002), '127.0.0.1', () => console.log(`CMS Studio preview: http://127.0.0.1:${process.env.PORT || 8002}`));
+}).listen(Number(process.env.PORT || 8000), '127.0.0.1', () => console.log(`CMS Studio preview: http://127.0.0.1:${process.env.PORT || 8000}`));
