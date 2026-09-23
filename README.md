@@ -16,3 +16,5 @@ The previous custom HTML rules feature was removed. No rule scripts or custom ta
 Publish contents of dist to a separate static site when ready. V2 has not been deployed publicly; add canonical/social URLs for its actual address before publishing.
 
 Tests: tests/browser-smoke.cjs (original conversion regression) and tests/preview-smoke.cjs (V2 preview/mapping). Both use installed Playwright and Microsoft Edge.
+
+Build adds content hashes to CSS/JS URLs to prevent stale assets after deployment. Upload every file/folder INSIDE dist to the GitHub Pages publishing root, preserving js, vendor and assets folders. Do not upload the ZIP itself as the website.
